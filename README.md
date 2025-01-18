@@ -32,8 +32,8 @@ az network vnet create --name EcommerceVNet --resource-group EcommerceRG \
 --address-prefix 10.0.0.0/16 --subnet-name FrontendSubnet --subnet-prefix 10.0.1.0/24  
 ```
 
-- 10.0.0.0/16: The address space for the entire VNet.
-- 10.0.1.0/24: A subnet dedicated to the frontend (you will define others for backend and databases).
+- **10.0.0.0/16**: The address space for the entire VNet.
+- **10.0.1.0/24**: A subnet dedicated to the frontend (you will define others for backend and databases).
 
 2\. Add additional subnets for the Backend and Database:  
 ```bash
@@ -91,8 +91,8 @@ az appservice plan create --name EcommerceAppPlan --resource-group EcommerceRG \
 --sku P1v2 --is-linux
 ```  
 
-- P1v2: A Premium tier providing autoscaling support.
-- \--is-linux: Denotes that the plan is for Linux-based applications.
+- **P1v2**: A Premium tier providing autoscaling support.
+- **--is-linux**: Denotes that the plan is for Linux-based applications.
 
 ### 2.2. Deploy Frontend Application
 
@@ -135,8 +135,8 @@ az webapp config hostname add --webapp-name EcommerceFrontend --resource-group E
 
 c) Go to your DNS provider’s portal and add a CNAME record to map the Custom Domain to the App Service hostname
 
-- Hostname: www
-- Value: <AppServiceDefaultHostName>
+- Hostname: **www**
+- Value: **<AppServiceDefaultHostName>**
 
 d) Verify Custom Domain ownership by:
 
@@ -146,9 +146,9 @@ az webapp config hostname list --webapp-name EcommerceFrontend --resource-group 
 ```
 
 - Add TXT record to DNS provider
-- Record Type: TXT
-- Hostname: \_dnsauth.<CustomDomain>
-- Value: TXT record value
+- Record Type: **TXT**
+- Hostname: **\_dnsauth.<CustomDomain>**
+- Value: **TXT record value**
 
 **\*\*Note: DNS Propagation can take between a few minutes to 24 hours**
 
@@ -264,8 +264,7 @@ number: 80
 ```bash
 kubectl apply -f ingress.yaml
 ```
- 
-<br/>
+
 ## Step 4: Configure the Database
 
 <br/>This step involves setting up the database for storing product data, user accounts, and transaction records.  
@@ -339,10 +338,10 @@ az storage blob generate-sas --account-name EcommerceStorage --container-name im
 ## Step 6: Set Up Continuous Integration (CI)
 
 <br/>**What is CI?** 
-Continuous Integration (CI) involves automatically building and testing code every time changes are committed to a repository. It ensures that code changes are integrated smoothly, reducing the chances of integration issues later in the process.  
+<br/>Continuous Integration (CI) involves automatically building and testing code every time changes are committed to a repository. It ensures that code changes are integrated smoothly, reducing the chances of integration issues later in the process.  
 
 <br/>**Why is CI Important?**
-It allows developers to continuously deliver high-quality code, catch errors early, and accelerate the release cycle. In an Azure-based e-commerce platform, it helps ensure frontend and backend code is consistently tested and deployed.  
+<br/>It allows developers to continuously deliver high-quality code, catch errors early, and accelerate the release cycle. In an Azure-based e-commerce platform, it helps ensure frontend and backend code is consistently tested and deployed.  
 
 <br/>Steps to Set Up CI for the Frontend (React/Angular) Application:
 
@@ -409,10 +408,10 @@ tags: 'latest'
 ## Step 7: Set Up Continuous Deployment (CD)  
  
 <br/>**What is CD?**
-Continuous Deployment (CD) automates the deployment of applications to production environments every time changes pass through the CI pipeline.  
+<br/>Continuous Deployment (CD) automates the deployment of applications to production environments every time changes pass through the CI pipeline.  
 
 <br/>**Why is CD Important?** 
-With CD, updates to the application are automatically deployed, ensuring a smooth release cycle and minimizing manual intervention. For an e-commerce platform, it ensures the latest features or fixes are deployed quickly.  
+<br/>With CD, updates to the application are automatically deployed, ensuring a smooth release cycle and minimizing manual intervention. For an e-commerce platform, it ensures the latest features or fixes are deployed quickly.  
 
 <br/>Steps to Set Up CD
 
@@ -474,11 +473,11 @@ az network application-gateway create \
 
 Parameters explained:
 
-\--sku WAF_v2: Ensures WAF (Web Application Firewall) is enabled.
+-**--sku WAF_v2**: Ensures WAF (Web Application Firewall) is enabled.
 
-\--capacity 2: Configures an autoscaling gateway with two instances.
+-**--capacity 2**: Configures an autoscaling gateway with two instances.
 
-\--subnet FrontendSubnet: Deploys the Application Gateway in the frontend subnet.
+-**--subnet FrontendSubnet**: Deploys the Application Gateway in the frontend subnet.
 
 3\. Set Up Backends in the Application Gateway
 
@@ -512,7 +511,7 @@ az network application-gateway address-pool create \
 --backend-addresses <AKS_BACKEND_IP>
 ```
 
-Replace <AKS_BACKEND_IP> with the service’s IP address.
+Replace **<AKS_BACKEND_IP>** with the service’s IP address.
 
 4\. Configure HTTP Settings
 
@@ -555,7 +554,7 @@ az network application-gateway http-listener create \
 --ssl-cert <CERT_NAME>
 ```
 
-Replace <CERT_NAME> with the SSL certificate name uploaded to the Application Gateway.
+Replace **<CERT_NAME>** with the SSL certificate name uploaded to the Application Gateway.
 
 - Define Routing Rules
 - For frontend (App Service):
@@ -591,10 +590,10 @@ Explanation:
 ## Step 9: Monitoring and Logging
 
 <br/>**What is Monitoring and Logging?**  
-Monitoring involves continuously checking the health, performance, and availability of your application and infrastructure. Logging collects application logs, error messages, and diagnostic data. 
+<br/>Monitoring involves continuously checking the health, performance, and availability of your application and infrastructure. Logging collects application logs, error messages, and diagnostic data. 
 
 <br/>**Why is Monitoring and Logging Important?** 
-For an e-commerce platform, uptime and smooth user experience are critical. Monitoring and logging help detect issues early, ensuring you can fix problems before they impact customers. 
+<br/>For an e-commerce platform, uptime and smooth user experience are critical. Monitoring and logging help detect issues early, ensuring you can fix problems before they impact customers. 
 
 <br/>Steps to Set Up Monitoring and Logging
 
@@ -652,7 +651,7 @@ az monitor diagnostic-settings create --name Diagnostics \\
 \- Create custom dashboards in Azure Monitor to visualize the health and performance of your platform.  
 \- Set up alert rules to notify administrators about critical issues (e.g., high latency, failed requests).  
 
-<br/>Conclusion:  
+<br/><br/>Conclusion:  
 
 <br/>This guide has covered the end-to-end process for setting up and securing a cloud-based e-commerce platform using Microsoft Azure. We’ve addressed key stages, from environment setup to monitoring, ensuring a smooth and secure deployment process for your application.  
 <br/>By following these detailed steps, you’ll have a robust, scalable, and secure platform capable of handling e-commerce workloads, traffic spikes, and sensitive user data.
