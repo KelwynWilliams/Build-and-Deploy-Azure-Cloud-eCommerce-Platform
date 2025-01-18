@@ -1,4 +1,3 @@
-# Build-and-Deploy-Azure-Cloud-eCommerce-Platform
 # Build and Deploy Azure Cloud-based e-Commerce Platform
 
 ## Step 1: Set Up Azure Environment
@@ -290,40 +289,61 @@ az sql db create --name EcommerceDB --resource-group EcommerceRG \\
 \--server EcommerceSQLServer --service-objective S1
 ```
 
-<br/>4.2. Secure Database with Private Endpoint
+### 4.2. Secure Database with Private Endpoint
 
 A Private Endpoint restricts access to the database, ensuring that it’s not exposed to the public internet.  
 This enhances security by limiting access to trusted resources within your network.  
-<br/>Steps:  
-1\. Create a Private Endpoint for the database:  
-<br/>az network private-endpoint create --name SqlPrivateEndpoint --resource-group EcommerceRG \\  
-\--vnet-name EcommerceVNet --subnet DatabaseSubnet --private-connection-resource-id &lt;SQL_RESOURCE_ID&gt;
 
-<br/>**Step 5: Add Storage for Static Assets  
-**  
+<br/>Steps:  
+
+1\. Create a Private Endpoint for the database: 
+```bash
+az network private-endpoint create --name SqlPrivateEndpoint --resource-group EcommerceRG \\  
+\--vnet-name EcommerceVNet --subnet DatabaseSubnet --private-connection-resource-id <SQL_RESOURCE_ID>
+```
+
+## Step 5: Add Storage for Static Assets  
+
 This step sets up Blob Storage to host product images and other static assets.  
-<br/>5.1. Create Blob Storage  
+
+### 5.1. Create Blob Storage  
+
 Blob Storage provides scalable, low-cost storage for large amounts of unstructured data (images, files, etc.).  
 It’s optimized for storing large files and objects.  
-<br/>Steps:  
+
+<br/>Steps: 
+
 1\. Create a Storage Account:  
-<br/>az storage account create --name EcommerceStorage --resource-group EcommerceRG --location eastus  
+```bash
+az storage account create --name EcommerceStorage --resource-group EcommerceRG --location eastus
+```
+ 
 <br/>2\. Create a Blob Container:  
-<br/>az storage container create --name images --account-name EcommerceStorage  
-<br/>5.2. Secure Blob Storage  
+```bash
+az storage container create --name images --account-name EcommerceStorage
+```
+
+### 5.2. Secure Blob Storage  
 
 Use Shared Access Signatures (SAS) to control access to the storage container.  
 SAS tokens provide temporary, secure access without exposing storage keys.  
-<br/>Steps:  
-1\. Generate a SAS token:  
-<br/>az storage blob generate-sas --account-name EcommerceStorage --container-name images \\  
-\--permissions rwd --expiry 2024-12-31T23:59:00Z
 
-**Step 6: Set Up Continuous Integration (CI)**  
-<br/>What is CI?  
+<br/>Steps: 
+
+1\. Generate a SAS token:  
+```bash
+az storage blob generate-sas --account-name EcommerceStorage --container-name images \\  
+\--permissions rwd --expiry 2024-12-31T23:59:00Z
+```
+
+## Step 6: Set Up Continuous Integration (CI)
+
+<br/>**What is CI?** 
 Continuous Integration (CI) involves automatically building and testing code every time changes are committed to a repository. It ensures that code changes are integrated smoothly, reducing the chances of integration issues later in the process.  
-<br/>Why is CI Important?  
+
+<br/>**Why is CI Important?**
 It allows developers to continuously deliver high-quality code, catch errors early, and accelerate the release cycle. In an Azure-based e-commerce platform, it helps ensure frontend and backend code is consistently tested and deployed.  
+
 <br/>Steps to Set Up CI for the Frontend (React/Angular) Application:
 
 1\. Create a GitHub Repository (or other Git-based repo):
@@ -341,52 +361,59 @@ It allows developers to continuously deliver high-quality code, catch errors ear
 - Select GitHub as the repository source.
 - Configure the pipeline using YAML or the classic editor.
 
-For YAML, here’s an example for a Node.js-based React app:  
-<br/>trigger:  
+For YAML, here’s an example for a Node.js-based React app: 
+```yaml
+trigger:  
 branches:  
 include:  
-\- main  
-<br/>pool:  
+- main  
+pool:  
 vmImage: 'ubuntu-latest'  
-<br/>steps:  
-\- task: NodeTool@0  
+steps:  
+- task: NodeTool@0  
 inputs:  
 versionSpec: '16.x'  
 addToPath: true  
-\- script: |  
+- script: |  
 npm install  
 npm run build  
 displayName: 'Install and build frontend'  
-\- task: AzureWebApp@1  
+- task: AzureWebApp@1  
 inputs:  
 appName: 'EcommerceFrontend'  
-package: $(System.DefaultWorkingDirectory)/\*\*/build.zip  
-<br/><br/>4\. Configure CI for Backend (Dockerized APIs):
+package: $(System.DefaultWorkingDirectory)/\*\*/build.zip
+```
+
+<br/>4\. Configure CI for Backend (Dockerized APIs):
 
 - For the backend, the process involves building Docker images and pushing them to Azure Container Registry (ACR).  
 
 Example YAML pipeline for Docker:  
-<br/>trigger:  
+```yaml
+trigger:  
 branches:  
 include:  
-\- main  
-<br/>pool:  
+- main  
+pool:  
 vmImage: 'ubuntu-latest'  
-<br/>steps:  
-\- task: Docker@2  
+steps:  
+- task: Docker@2  
 inputs:  
 containerRegistry: 'EcommerceACR'  
 repository: 'backend'  
 command: 'buildAndPush'  
 Dockerfile: '$(Build.SourcesDirectory)/Dockerfile'  
 tags: 'latest'  
+```
 
-**Step 7: Set Up Continuous Deployment (CD)  
-**  
-What is CD?  
+## Step 7: Set Up Continuous Deployment (CD)  
+ 
+<br/>**What is CD?**
 Continuous Deployment (CD) automates the deployment of applications to production environments every time changes pass through the CI pipeline.  
-<br/>Why is CD Important?  
+
+<br/>**Why is CD Important?** 
 With CD, updates to the application are automatically deployed, ensuring a smooth release cycle and minimizing manual intervention. For an e-commerce platform, it ensures the latest features or fixes are deployed quickly.  
+
 <br/>Steps to Set Up CD
 
 1\. Link Your CI Pipeline to CD:
@@ -396,60 +423,54 @@ With CD, updates to the application are automatically deployed, ensuring a smoot
 2\. Deploy Frontend to Azure App Service:
 
 - Use the Azure App Service task in your release pipeline.  
-    Example steps for deployment:  
-    <br/>\- task: AzureWebApp@1  
+Example steps for deployment:  
+```yaml
+    - task: AzureWebApp@1  
     inputs:  
     appName: 'EcommerceFrontend'  
     package: $(System.DefaultWorkingDirectory)/\_FrontendApp/build.zip
+```
 
 3\. Deploy Backend to AKS (Azure Kubernetes Service):
 
 - For backend services, use kubectl in the CD pipeline to apply updates to the AKS cluster.  
-    Example:
-
-\- task: AzureCLI@2  
+Example:
+```yaml
+- task: AzureCLI@2  
 inputs:  
 azureSubscription: 'AzureSubscription'  
 scriptType: 'bash'  
 scriptLocation: 'inlineScript'  
 inlineScript: |  
 kubectl set image deployment/backend backend=&lt;ACR_NAME&gt;.azurecr.io/backend:latest
+```
 
-**Step 8: Setting Up Application Gateway (WAF)**
+## Step 8: Setting Up Application Gateway (WAF)
 
 Steps:
 
 1\. Create a Public IP Address for the gateway:
-
+```bash
 az network public-ip create \\
-
-&nbsp; --resource-group EcommerceRG \\
-
-&nbsp; --name AppGatewayPublicIP \\
-
-&nbsp; --sku Standard
+--resource-group EcommerceRG \\
+--name AppGatewayPublicIP \\
+--sku Standard
+```
 
 2\. Deploy Application Gateway in the Frontend Subnet:
 
 - Use the following command:
-
+```bash
 az network application-gateway create \\
-
-&nbsp; --name AppGateway \\
-
-&nbsp; --location eastus \\
-
-&nbsp; --resource-group EcommerceRG \\
-
-&nbsp; --sku WAF_v2 \\
-
-&nbsp; --capacity 2 \\
-
-&nbsp; --vnet-name EcommerceVNet \\
-
-&nbsp; --subnet FrontendSubnet \\
-
-&nbsp; --public-ip-address AppGatewayPublicIP
+--name AppGateway \\
+--location eastus \\
+--resource-group EcommerceRG \\
+--sku WAF_v2 \\
+--capacity 2 \\
+--vnet-name EcommerceVNet \\
+--subnet FrontendSubnet \\
+--public-ip-address AppGatewayPublicIP
+```
 
 Parameters explained:
 
@@ -464,75 +485,60 @@ Parameters explained:
 The Application Gateway needs to know where to send traffic. You’ll define two backend pools: one for the App Service (frontend) and another for the AKS backend.
 
 - Add Backend Pool for App Service
-
+```bash
 az network application-gateway address-pool create \\
+--gateway-name AppGateway \\
+--resource-group EcommerceRG \\
+--name FrontendAppPool \\
+--backend-addresses <FrontendApp>.azurewebsites.net"
+```
 
-&nbsp; --gateway-name AppGateway \\
-
-&nbsp; --resource-group EcommerceRG \\
-
-&nbsp; --name FrontendAppPool \\
-
-&nbsp; --backend-addresses "&lt;FrontendApp&gt;.azurewebsites.net"
-
-Replace &lt;FrontendApp&gt; with the name of your App Service (e.g. EcommerceFrontend).
+Replace <FrontendApp> with the name of your App Service (e.g. EcommerceFrontend).
 
 - Add Backend Pool for AKS
 - Obtain the internal IP of the AKS service exposed via a Kubernetes Service:
-
-kubectl get svc -n &lt;namespace&gt; backend-service
+```bash
+kubectl get svc -n <namespace> backend-service
+```
 
 Note the **CLUSTER-IP** (if internal). Use this IP address as the backend address.
 
 - Create the backend pool:
-
+```bash
 az network application-gateway address-pool create \\
+--gateway-name AppGateway \\
+--resource-group EcommerceRG \\
+--name BackendAppPool \\
+--backend-addresses <AKS_BACKEND_IP>
+```
 
-&nbsp; --gateway-name AppGateway \\
-
-&nbsp; --resource-group EcommerceRG \\
-
-&nbsp; --name BackendAppPool \\
-
-&nbsp; --backend-addresses &lt;AKS_BACKEND_IP&gt;
-
-Replace &lt;AKS_BACKEND_IP&gt; with the service’s IP address.
+Replace <AKS_BACKEND_IP> with the service’s IP address.
 
 4\. Configure HTTP Settings
 
 HTTP settings define the port and protocol used to connect to the backend.
 
 - Configure HTTP Settings for App Service
-
+```bash
 az network application-gateway http-settings create \\
-
-&nbsp; --gateway-name AppGateway \\
-
-&nbsp; --resource-group EcommerceRG \\
-
-&nbsp; --name FrontendAppHttpSettings \\
-
-&nbsp; --port 80 \\
-
-&nbsp; --protocol Http \\
-
-&nbsp; --host-name "&lt;FrontendApp&gt;.azurewebsites.net" \\
-
-&nbsp; --pick-hostname-from-backend-address
+--gateway-name AppGateway \\
+--resource-group EcommerceRG \\
+--name FrontendAppHttpSettings \\
+--port 80 \\
+--protocol Http \\
+--host-name "<FrontendApp>.azurewebsites.net" \\
+--pick-hostname-from-backend-address
+```
 
 - Configure HTTP Settings for AKS
-
+```bash
 az network application-gateway http-settings create \\
-
-&nbsp; --gateway-name AppGateway \\
-
-&nbsp; --resource-group EcommerceRG \\
-
-&nbsp; --name BackendAppHttpSettings \\
-
-&nbsp; --port 80 \\
-
-&nbsp; --protocol Http
+--gateway-name AppGateway \\
+--resource-group EcommerceRG \\
+--name BackendAppHttpSettings \\
+--port 80 \\
+--protocol Http
+```
 
 5\. Set Up Routing Rules
 
@@ -540,103 +546,102 @@ Routing rules determine how traffic is forwarded to backend pools based on URL p
 
 - Create a Listener
 - Add a listener for HTTPS traffic:
-
+```bash
 az network application-gateway http-listener create \\
+--gateway-name AppGateway \\
+--resource-group EcommerceRG \\
+--name HttpsListener \\
+--frontend-port 443 \\
+--ssl-cert <CERT_NAME>
+```
 
-&nbsp; --gateway-name AppGateway \\
-
-&nbsp; --resource-group EcommerceRG \\
-
-&nbsp; --name HttpsListener \\
-
-&nbsp; --frontend-port 443 \\
-
-&nbsp; --ssl-cert &lt;CERT_NAME&gt;
-
-Replace &lt;CERT_NAME&gt; with the SSL certificate name uploaded to the Application Gateway.
+Replace <CERT_NAME> with the SSL certificate name uploaded to the Application Gateway.
 
 - Define Routing Rules
 - For frontend (App Service):
-
+```bash
 az network application-gateway rule create \\
-
-&nbsp; --gateway-name AppGateway \\
-
-&nbsp; --resource-group EcommerceRG \\
-
-&nbsp; --name FrontendRule \\
-
-&nbsp; --http-listener HttpsListener \\
-
-&nbsp; --rule-type Basic \\
-
-&nbsp; --http-settings FrontendAppHttpSettings \\
-
-&nbsp; --address-pool FrontendAppPool
+--gateway-name AppGateway \\
+--resource-group EcommerceRG \\
+--name FrontendRule \\
+--http-listener HttpsListener \\
+--rule-type Basic \\
+--http-settings FrontendAppHttpSettings \\
+--address-pool FrontendAppPool
+```
 
 - For backend (AKS):
-
+```bash
 az network application-gateway rule create \\
-
-&nbsp; --gateway-name AppGateway \\
-
-&nbsp; --resource-group EcommerceRG \\
-
-&nbsp; --name BackendRule \\
-
-&nbsp; --http-listener HttpsListener \\
-
-&nbsp; --rule-type PathBasedRouting \\
-
-&nbsp; --http-settings BackendAppHttpSettings \\
-
-&nbsp; --address-pool BackendAppPool \\
-
-&nbsp; --paths /api/\*
+--gateway-name AppGateway \\
+--resource-group EcommerceRG \\
+--name BackendRule \\
+--http-listener HttpsListener \\
+--rule-type PathBasedRouting \\
+--http-settings BackendAppHttpSettings \\
+--address-pool BackendAppPool \\
+--paths /api/\*
+```
 
 Explanation:
 
 - **FrontendRule** forwards general traffic to the App Service.
 - **BackendRule** forwards traffic to /api/\* (e.g., /api/orders, /api/products) to the AKS backend.
 
-**Step 9: Monitoring and Logging**  
-<br/>What is Monitoring and Logging?  
-Monitoring involves continuously checking the health, performance, and availability of your application and infrastructure. Logging collects application logs, error messages, and diagnostic data.  
-<br/>Why is Monitoring and Logging Important?  
-For an e-commerce platform, uptime and smooth user experience are critical. Monitoring and logging help detect issues early, ensuring you can fix problems before they impact customers.  
+## Step 9: Monitoring and Logging
+
+<br/>**What is Monitoring and Logging?**  
+Monitoring involves continuously checking the health, performance, and availability of your application and infrastructure. Logging collects application logs, error messages, and diagnostic data. 
+
+<br/>**Why is Monitoring and Logging Important?** 
+For an e-commerce platform, uptime and smooth user experience are critical. Monitoring and logging help detect issues early, ensuring you can fix problems before they impact customers. 
+
 <br/>Steps to Set Up Monitoring and Logging
 
 1\. Azure Monitor:  
 
 Azure Monitor is the central service for collecting, analyzing, and acting on telemetry data from your resources.  
-Set up Application Insights to monitor your application’s performance.  
-<br/>az monitor app-insights component create --app EcommerceFrontend --location eastus \\  
-\--resource-group EcommerceRG  
+Set up Application Insights to monitor your application’s performance.
+```bash
+az monitor app-insights component create --app EcommerceFrontend --location eastus \\  
+\--resource-group EcommerceRG
+```
+
 <br/>2\. Log Analytics:  
 
 Use Log Analytics workspaces to aggregate logs and events from Azure resources.  
 Example to create a Log Analytics workspace:  
-<br/>az monitor log-analytics workspace create --resource-group EcommerceRG \\  
-\--workspace-name EcommerceLogs --location eastus  
+```bash
+az monitor log-analytics workspace create --resource-group EcommerceRG \\  
+\--workspace-name EcommerceLogs --location eastus
+```
+  
 <br/>3\. Set up Alerts:  
 
 Set up alerts for critical issues like low disk space, high CPU usage, or failed transactions.  
-<br/>az monitor metrics alert create --resource-group EcommerceRG --name HighCPUAlert \\  
+```bash
+az monitor metrics alert create --resource-group EcommerceRG --name HighCPUAlert \\  
 \--scopes /subscriptions/{subscription-id}/resourceGroups/EcommerceRG/providers/Microsoft.Compute/virtualMachines/EcommerceVM \\  
-\--condition "avg CPUUsage > 80" --action-group HighCPUActionGroup  
+\--condition "avg CPUUsage > 80" --action-group HighCPUActionGroup
+```
 <br/><br/>4\. Container Monitoring (AKS):  
 
 Use Azure Monitor for containers to track the health and performance of your AKS cluster.  
 Enable container logs and metrics collection.  
-<br/>az aks enable-addons --resource-group EcommerceRG --name EcommerceAKS --addons monitoring
+```bash
+az aks enable-addons --resource-group EcommerceRG --name EcommerceAKS --addons monitoring
+```
 
 5\. Diagnostic Settings:  
 • Enable diagnostic settings on all resources to capture logs and metrics.  
-<br/>az monitor diagnostic-settings create --name Diagnostics \\  
-\--resource /subscriptions/{subscription-id}/resourceGroups/EcommerceRG/providers/Microsoft.Web/sites/EcommerceFrontend \\  
-\--logs '\[{"category": "AppServiceAppLogs", "enabled": true}\]' \\  
-\--metrics '\[{"category": "AllMetrics", "enabled": true}\]' \\  
-\--workspace /subscriptions/{subscription-id}/resourceGroups/EcommerceRG/providers/Microsoft.OperationalInsights/workspaces/EcommerceLogs  
+```bash
+az monitor diagnostic-settings create --name Diagnostics \\  
+--resource /subscriptions/{subscription-id}/resourceGroups/EcommerceRG/providers/Microsoft.Web/sites/EcommerceFrontend \\  
+--logs '\[{"category": "AppServiceAppLogs", "enabled": true}\]' \\  
+--metrics '\[{"category": "AllMetrics", "enabled": true}\]' \\  
+--workspace /subscriptions/{subscription-id}/resourceGroups/EcommerceRG/providers/Microsoft.OperationalInsights/workspaces/EcommerceLogs
+```
+
 <br/>Additional Best Practices:
 
 6\. Azure Application Gateway Monitoring:  
@@ -646,7 +651,9 @@ Enable container logs and metrics collection.
 7\. Alerting and Dashboards:  
 \- Create custom dashboards in Azure Monitor to visualize the health and performance of your platform.  
 \- Set up alert rules to notify administrators about critical issues (e.g., high latency, failed requests).  
+
 <br/>Conclusion:  
+
 <br/>This guide has covered the end-to-end process for setting up and securing a cloud-based e-commerce platform using Microsoft Azure. We’ve addressed key stages, from environment setup to monitoring, ensuring a smooth and secure deployment process for your application.  
 <br/>By following these detailed steps, you’ll have a robust, scalable, and secure platform capable of handling e-commerce workloads, traffic spikes, and sensitive user data.
 
