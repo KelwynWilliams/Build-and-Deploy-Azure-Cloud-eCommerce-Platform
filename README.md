@@ -473,11 +473,11 @@ az network application-gateway create \
 
 Parameters explained:
 
--**--sku WAF_v2**: Ensures WAF (Web Application Firewall) is enabled.
+**--sku WAF_v2**: Ensures WAF (Web Application Firewall) is enabled.
 
--**--capacity 2**: Configures an autoscaling gateway with two instances.
+**--capacity 2**: Configures an autoscaling gateway with two instances.
 
--**--subnet FrontendSubnet**: Deploys the Application Gateway in the frontend subnet.
+**--subnet FrontendSubnet**: Deploys the Application Gateway in the frontend subnet.
 
 3\. Set Up Backends in the Application Gateway
 
