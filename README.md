@@ -1,4 +1,6 @@
 # Build and Deploy Azure Cloud-based e-Commerce Platform
+![Deploy e-Commerce Platform in Azure drawio](https://github.com/user-attachments/assets/a2f6177e-456e-4f7b-ae40-42be31bf388a)
+
 
 ## Step 1: Set Up Azure Environment
 
