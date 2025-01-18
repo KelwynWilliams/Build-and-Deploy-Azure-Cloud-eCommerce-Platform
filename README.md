@@ -28,8 +28,8 @@ A Virtual Network (VNet) provides isolated, secure communication between Azure r
 
 1\. Create the VNet: 
 ```bash
-az network vnet create --name EcommerceVNet --resource-group EcommerceRG \\  
-\--address-prefix 10.0.0.0/16 --subnet-name FrontendSubnet --subnet-prefix 10.0.1.0/24  
+az network vnet create --name EcommerceVNet --resource-group EcommerceRG \  
+--address-prefix 10.0.0.0/16 --subnet-name FrontendSubnet --subnet-prefix 10.0.1.0/24  
 ```
 
 - 10.0.0.0/16: The address space for the entire VNet.
@@ -37,12 +37,12 @@ az network vnet create --name EcommerceVNet --resource-group EcommerceRG \\
 
 2\. Add additional subnets for the Backend and Database:  
 ```bash
-az network vnet subnet create --address-prefixes 10.0.2.0/24 \\  
-\--name BackendSubnet --vnet-name EcommerceVNet --resource-group EcommerceRG
+az network vnet subnet create --address-prefixes 10.0.2.0/24 \  
+--name BackendSubnet --vnet-name EcommerceVNet --resource-group EcommerceRG
 ```
 ```bash
-az network vnet subnet create --address-prefixes 10.0.3.0/24 \\  
-\--name DatabaseSubnet --vnet-name EcommerceVNet --resource-group EcommerceRG  
+az network vnet subnet create --address-prefixes 10.0.3.0/24 \ 
+--name DatabaseSubnet --vnet-name EcommerceVNet --resource-group EcommerceRG  
 ```
 
 ### 1.3. Secure Subnets with NSGs (Network Security Groups)
@@ -59,18 +59,18 @@ az network nsg create --name FrontendNSG --resource-group EcommerceRG
  
 <br/>2\. Add inbound rules for HTTP and HTTPS traffic:  
 ```bash
-az network nsg rule create --nsg-name FrontendNSG --resource-group EcommerceRG \\  
-\--name AllowHTTP --priority 100 --protocol Tcp --destination-port-ranges 80
+az network nsg rule create --nsg-name FrontendNSG --resource-group EcommerceRG \ 
+--name AllowHTTP --priority 100 --protocol Tcp --destination-port-ranges 80
 ```
 ```bash
-az network nsg rule create --nsg-name FrontendNSG --resource-group EcommerceRG \\  
-\--name AllowHTTPS --priority 101 --protocol Tcp --destination-port-ranges 443
+az network nsg rule create --nsg-name FrontendNSG --resource-group EcommerceRG \  
+--name AllowHTTPS --priority 101 --protocol Tcp --destination-port-ranges 443
 ```
 
 <br/>3\. Associate the FrontendNSG with the Frontend subnet:  
 ```bash
-az network vnet subnet update --name FrontendSubnet --vnet-name EcommerceVNet \\  
-\--resource-group EcommerceRG --network-security-group FrontendNSG
+az network vnet subnet update --name FrontendSubnet --vnet-name EcommerceVNet \  
+--resource-group EcommerceRG --network-security-group FrontendNSG
 ```
 <br/>4\. Repeat for Backend and Database subnets, restricting access to only the necessary ports.  
 
@@ -87,8 +87,8 @@ A suitable App Service Plan ensures the frontend can scale and be highly availab
 
 1\. Create an App Service Plan:  
 ```bash
-az appservice plan create --name EcommerceAppPlan --resource-group EcommerceRG \\  
-\--sku P1v2 --is-linux
+az appservice plan create --name EcommerceAppPlan --resource-group EcommerceRG \  
+--sku P1v2 --is-linux
 ```  
 
 - P1v2: A Premium tier providing autoscaling support.
@@ -104,14 +104,14 @@ Azure App Service is a fully managed platform for web applications, providing ea
 
 1\. Create a web app: 
 ```bash
-az webapp create --name EcommerceFrontend --resource-group EcommerceRG \\  
-\--plan EcommerceAppPlan --runtime "NODE|16-lts"
+az webapp create --name EcommerceFrontend --resource-group EcommerceRG \  
+--plan EcommerceAppPlan --runtime "NODE|16-lts"
 ```
 
 <br/>2\. Deploy the app from a Git repository:  
 ```bash
-az webapp deployment source config --name EcommerceFrontend \\  
-\--resource-group EcommerceRG --repo-url <repository-url> --branch main --manual-integration
+az webapp deployment source config --name EcommerceFrontend \  
+--resource-group EcommerceRG --repo-url <repository-url> --branch main --manual-integration
 ```
 
 ### 2.3. Enable HTTPS and Custom Domain
@@ -178,8 +178,8 @@ Steps:
 
 1\. Create the AKS Cluster:  
 ```bash
-az aks create --resource-group EcommerceRG --name EcommerceAKS \\  
-\--node-count 3 --enable-managed-identity --generate-ssh-keys
+az aks create --resource-group EcommerceRG --name EcommerceAKS \  
+--node-count 3 --enable-managed-identity --generate-ssh-keys
 ```
  
 <br/>2\. Connect to the cluster:  
@@ -279,14 +279,14 @@ Azure SQL Database is a fully managed, scalable relational database with built-i
 
 1\. Create an SQL Server:  
 ```bash
-az sql server create --name EcommerceSQLServer --resource-group EcommerceRG \\  
-\--location eastus --admin-user adminuser --admin-password <password>
+az sql server create --name EcommerceSQLServer --resource-group EcommerceRG \  
+--location eastus --admin-user adminuser --admin-password <password>
 ```
   
 <br/>2\. Create a Database:  
 ```bash
-az sql db create --name EcommerceDB --resource-group EcommerceRG \\  
-\--server EcommerceSQLServer --service-objective S1
+az sql db create --name EcommerceDB --resource-group EcommerceRG \  
+--server EcommerceSQLServer --service-objective S1
 ```
 
 ### 4.2. Secure Database with Private Endpoint
@@ -298,8 +298,8 @@ This enhances security by limiting access to trusted resources within your netwo
 
 1\. Create a Private Endpoint for the database: 
 ```bash
-az network private-endpoint create --name SqlPrivateEndpoint --resource-group EcommerceRG \\  
-\--vnet-name EcommerceVNet --subnet DatabaseSubnet --private-connection-resource-id <SQL_RESOURCE_ID>
+az network private-endpoint create --name SqlPrivateEndpoint --resource-group EcommerceRG \  
+--vnet-name EcommerceVNet --subnet DatabaseSubnet --private-connection-resource-id <SQL_RESOURCE_ID>
 ```
 
 ## Step 5: Add Storage for Static Assets  
@@ -332,8 +332,8 @@ SAS tokens provide temporary, secure access without exposing storage keys.
 
 1\. Generate a SAS token:  
 ```bash
-az storage blob generate-sas --account-name EcommerceStorage --container-name images \\  
-\--permissions rwd --expiry 2024-12-31T23:59:00Z
+az storage blob generate-sas --account-name EcommerceStorage --container-name images \ 
+--permissions rwd --expiry 2024-12-31T23:59:00Z
 ```
 
 ## Step 6: Set Up Continuous Integration (CI)
@@ -451,9 +451,9 @@ Steps:
 
 1\. Create a Public IP Address for the gateway:
 ```bash
-az network public-ip create \\
---resource-group EcommerceRG \\
---name AppGatewayPublicIP \\
+az network public-ip create \
+--resource-group EcommerceRG \
+--name AppGatewayPublicIP \
 --sku Standard
 ```
 
@@ -461,14 +461,14 @@ az network public-ip create \\
 
 - Use the following command:
 ```bash
-az network application-gateway create \\
---name AppGateway \\
---location eastus \\
---resource-group EcommerceRG \\
---sku WAF_v2 \\
---capacity 2 \\
---vnet-name EcommerceVNet \\
---subnet FrontendSubnet \\
+az network application-gateway create \
+--name AppGateway \
+--location eastus \
+--resource-group EcommerceRG \
+--sku WAF_v2 \
+--capacity 2 \
+--vnet-name EcommerceVNet \
+--subnet FrontendSubnet \
 --public-ip-address AppGatewayPublicIP
 ```
 
@@ -486,10 +486,10 @@ The Application Gateway needs to know where to send traffic. You’ll define two
 
 - Add Backend Pool for App Service
 ```bash
-az network application-gateway address-pool create \\
---gateway-name AppGateway \\
---resource-group EcommerceRG \\
---name FrontendAppPool \\
+az network application-gateway address-pool create \
+--gateway-name AppGateway \
+--resource-group EcommerceRG \
+--name FrontendAppPool \
 --backend-addresses <FrontendApp>.azurewebsites.net"
 ```
 
@@ -505,10 +505,10 @@ Note the **CLUSTER-IP** (if internal). Use this IP address as the backend addres
 
 - Create the backend pool:
 ```bash
-az network application-gateway address-pool create \\
---gateway-name AppGateway \\
---resource-group EcommerceRG \\
---name BackendAppPool \\
+az network application-gateway address-pool create \
+--gateway-name AppGateway \
+--resource-group EcommerceRG \
+--name BackendAppPool \
 --backend-addresses <AKS_BACKEND_IP>
 ```
 
@@ -520,23 +520,23 @@ HTTP settings define the port and protocol used to connect to the backend.
 
 - Configure HTTP Settings for App Service
 ```bash
-az network application-gateway http-settings create \\
---gateway-name AppGateway \\
---resource-group EcommerceRG \\
---name FrontendAppHttpSettings \\
---port 80 \\
---protocol Http \\
---host-name "<FrontendApp>.azurewebsites.net" \\
+az network application-gateway http-settings create \
+--gateway-name AppGateway \
+--resource-group EcommerceRG \
+--name FrontendAppHttpSettings \
+--port 80 \
+--protocol Http \
+--host-name "<FrontendApp>.azurewebsites.net" \
 --pick-hostname-from-backend-address
 ```
 
 - Configure HTTP Settings for AKS
 ```bash
-az network application-gateway http-settings create \\
---gateway-name AppGateway \\
---resource-group EcommerceRG \\
---name BackendAppHttpSettings \\
---port 80 \\
+az network application-gateway http-settings create \
+--gateway-name AppGateway \
+--resource-group EcommerceRG \
+--name BackendAppHttpSettings \
+--port 80 \
 --protocol Http
 ```
 
@@ -547,11 +547,11 @@ Routing rules determine how traffic is forwarded to backend pools based on URL p
 - Create a Listener
 - Add a listener for HTTPS traffic:
 ```bash
-az network application-gateway http-listener create \\
---gateway-name AppGateway \\
---resource-group EcommerceRG \\
---name HttpsListener \\
---frontend-port 443 \\
+az network application-gateway http-listener create \
+--gateway-name AppGateway \
+--resource-group EcommerceRG \
+--name HttpsListener \
+--frontend-port 443 \
 --ssl-cert <CERT_NAME>
 ```
 
@@ -560,26 +560,26 @@ Replace <CERT_NAME> with the SSL certificate name uploaded to the Application Ga
 - Define Routing Rules
 - For frontend (App Service):
 ```bash
-az network application-gateway rule create \\
---gateway-name AppGateway \\
---resource-group EcommerceRG \\
---name FrontendRule \\
---http-listener HttpsListener \\
---rule-type Basic \\
---http-settings FrontendAppHttpSettings \\
+az network application-gateway rule create \
+--gateway-name AppGateway \
+--resource-group EcommerceRG \
+--name FrontendRule \
+--http-listener HttpsListener \
+--rule-type Basic \
+--http-settings FrontendAppHttpSettings \
 --address-pool FrontendAppPool
 ```
 
 - For backend (AKS):
 ```bash
-az network application-gateway rule create \\
---gateway-name AppGateway \\
---resource-group EcommerceRG \\
---name BackendRule \\
---http-listener HttpsListener \\
---rule-type PathBasedRouting \\
---http-settings BackendAppHttpSettings \\
---address-pool BackendAppPool \\
+az network application-gateway rule create \
+--gateway-name AppGateway \
+--resource-group EcommerceRG \
+--name BackendRule \
+--http-listener HttpsListener \
+--rule-type PathBasedRouting \
+--http-settings BackendAppHttpSettings \
+--address-pool BackendAppPool \
 --paths /api/\*
 ```
 
@@ -603,8 +603,8 @@ For an e-commerce platform, uptime and smooth user experience are critical. Moni
 Azure Monitor is the central service for collecting, analyzing, and acting on telemetry data from your resources.  
 Set up Application Insights to monitor your application’s performance.
 ```bash
-az monitor app-insights component create --app EcommerceFrontend --location eastus \\  
-\--resource-group EcommerceRG
+az monitor app-insights component create --app EcommerceFrontend --location eastus \  
+--resource-group EcommerceRG
 ```
 
 <br/>2\. Log Analytics:  
@@ -612,17 +612,17 @@ az monitor app-insights component create --app EcommerceFrontend --location east
 Use Log Analytics workspaces to aggregate logs and events from Azure resources.  
 Example to create a Log Analytics workspace:  
 ```bash
-az monitor log-analytics workspace create --resource-group EcommerceRG \\  
-\--workspace-name EcommerceLogs --location eastus
+az monitor log-analytics workspace create --resource-group EcommerceRG \  
+--workspace-name EcommerceLogs --location eastus
 ```
   
 <br/>3\. Set up Alerts:  
 
 Set up alerts for critical issues like low disk space, high CPU usage, or failed transactions.  
 ```bash
-az monitor metrics alert create --resource-group EcommerceRG --name HighCPUAlert \\  
-\--scopes /subscriptions/{subscription-id}/resourceGroups/EcommerceRG/providers/Microsoft.Compute/virtualMachines/EcommerceVM \\  
-\--condition "avg CPUUsage > 80" --action-group HighCPUActionGroup
+az monitor metrics alert create --resource-group EcommerceRG --name HighCPUAlert \ 
+--scopes /subscriptions/{subscription-id}/resourceGroups/EcommerceRG/providers/Microsoft.Compute/virtualMachines/EcommerceVM \\  
+--condition "avg CPUUsage > 80" --action-group HighCPUActionGroup
 ```
 <br/><br/>4\. Container Monitoring (AKS):  
 
@@ -636,9 +636,9 @@ az aks enable-addons --resource-group EcommerceRG --name EcommerceAKS --addons m
 • Enable diagnostic settings on all resources to capture logs and metrics.  
 ```bash
 az monitor diagnostic-settings create --name Diagnostics \\  
---resource /subscriptions/{subscription-id}/resourceGroups/EcommerceRG/providers/Microsoft.Web/sites/EcommerceFrontend \\  
---logs '\[{"category": "AppServiceAppLogs", "enabled": true}\]' \\  
---metrics '\[{"category": "AllMetrics", "enabled": true}\]' \\  
+--resource /subscriptions/{subscription-id}/resourceGroups/EcommerceRG/providers/Microsoft.Web/sites/EcommerceFrontend \  
+--logs '\[{"category": "AppServiceAppLogs", "enabled": true}\]' \  
+--metrics '\[{"category": "AllMetrics", "enabled": true}\]' \  
 --workspace /subscriptions/{subscription-id}/resourceGroups/EcommerceRG/providers/Microsoft.OperationalInsights/workspaces/EcommerceLogs
 ```
 
