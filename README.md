@@ -2,7 +2,7 @@
 
 ## Step 1: Set Up Azure Environment
 
-<br/>This step prepares the Azure environment for managing and hosting various resources necessary for the e-commerce platform.  
+This step prepares the Azure environment for managing and hosting various resources necessary for the e-commerce platform.  
 
 ### 1.1. Create a Resource Group
 
