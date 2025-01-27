@@ -5,10 +5,10 @@
 
 This project involves creating a secure and scalable architecture for a multi-tier application, typically with:  
 
-- Frontend: Hosted on Azure App Service.
-- Backend: Deployed on Azure Kubernetes Service (AKS).
-- Database: Azure SQL Database for product, user, and order data.
-- Storage: Azure Blob Storage for static assets (e.g., images).
+- **Frontend**: Hosted on Azure App Service.
+- **Backend**: Deployed on Azure Kubernetes Service (AKS).
+- **Database**: Azure SQL Database for product, user, and order data.
+- **Storage**: Azure Blob Storage for static assets (e.g., images).
 
 
 Skills Demonstrated:  
