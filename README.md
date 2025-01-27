@@ -1,6 +1,22 @@
 # Build and Deploy Azure Cloud-based e-Commerce Platform
 ![Deploy e-Commerce Platform in Azure drawio](https://github.com/user-attachments/assets/a2f6177e-456e-4f7b-ae40-42be31bf388a)
 
+## Project Overview  
+
+This project involves creating a secure and scalable architecture for a multi-tier application, typically with:  
+
+- Frontend: Hosted on Azure App Service.
+- Backend: Deployed on Azure Kubernetes Service (AKS).
+- Database: Azure SQL Database for product, user, and order data.
+- Storage: Azure Blob Storage for static assets (e.g., images).
+
+
+Skills Demonstrated:  
+
+- Infrastructure as Code (IaC).
+- Networking and security (VNets, NSGs, WAF and Private Endpoints).
+- CI/CD pipelines for automated deployments.
+- Monitoring and scaling.
 
 ## Step 1: Set Up Azure Environment
 
