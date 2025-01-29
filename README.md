@@ -673,29 +673,3 @@ az monitor diagnostic-settings create --name Diagnostics \\
 
 <br/>This guide has covered the end-to-end process for setting up and securing a cloud-based e-commerce platform using Microsoft Azure. We’ve addressed key stages, from environment setup to monitoring, ensuring a smooth and secure deployment process for your application.  
 <br/>By following these detailed steps, you’ll have a robust, scalable, and secure platform capable of handling e-commerce workloads, traffic spikes, and sensitive user data.
-
-**Step 8: Secure Your Infrastructure**  
-<br/>What is Infrastructure Security?  
-Infrastructure security is about protecting your cloud resources (VMs, containers, databases, etc.) from unauthorized access, attacks, or data breaches. It ensures that your application and data are safe.  
-<br/>Why is Infrastructure Security Critical?  
-In an e-commerce platform, sensitive data such as user information, payment details, and business data must be protected to maintain customer trust and comply with regulations (e.g., GDPR, PCI DSS).  
-<br/>Steps to Secure Infrastructure  
-
-1\. Identity and Access Management (IAM):  
-• Azure Active Directory (AAD) is the core service to manage users and roles.  
-• Assign Role-Based Access Control (RBAC) to limit access to resources based on the user’s role.  
-Example of assigning roles:  
-<br/>az role assignment create --assignee &lt;user-email&gt; --role "Contributor" --resource-group EcommerceRG  
-
-2\. Network Security:  
-• Ensure Network Security Groups (NSGs) are properly configured for each subnet (frontend, backend, database).  
-<br/>3\. Data Encryption:  
-• Enable encryption at rest and in transit for sensitive data:  
-• SQL Databases: Enable Transparent Data Encryption (TDE).  
-• Blob Storage: Enable Storage Service Encryption (SSE).  
-4\. Private Endpoints:  
-• Use private endpoints for services like Azure SQL Database to ensure that they are not accessible over the internet, only within the VNet.  
-5\. Web Application Firewall (WAF):  
-• Set up Azure Application Gateway with WAF to filter malicious HTTP requests.  
-7\. DDoS Protection:  
-• Enable Azure DDoS Protection for your resources to defend against Distributed Denial-of-Service attacks.
