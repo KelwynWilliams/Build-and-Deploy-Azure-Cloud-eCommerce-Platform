@@ -29,7 +29,7 @@ It helps organize resources, simplify billing, and apply management policies lik
 
 <br/>Steps: 
 
-1\. Log in to the Azure Portal or use the CLI.  
+1\. Log in to the Azure CLI.  
 2\. To create a Resource Group:  
 ```bash
 az group create --name EcommerceRG --location eastus  
@@ -75,7 +75,7 @@ By applying NSGs, you can restrict traffic to specific services for better secur
 az network nsg create --name FrontendNSG --resource-group EcommerceRG
 ```
  
-<br/>2\. Add inbound rules for HTTP and HTTPS traffic:  
+2\. Add inbound rules for HTTP and HTTPS traffic:  
 ```bash
 az network nsg rule create --nsg-name FrontendNSG --resource-group EcommerceRG \ 
 --name AllowHTTP --priority 100 --protocol Tcp --destination-port-ranges 80
@@ -85,12 +85,12 @@ az network nsg rule create --nsg-name FrontendNSG --resource-group EcommerceRG \
 --name AllowHTTPS --priority 101 --protocol Tcp --destination-port-ranges 443
 ```
 
-<br/>3\. Associate the FrontendNSG with the Frontend subnet:  
+3\. Associate the FrontendNSG with the Frontend subnet:  
 ```bash
 az network vnet subnet update --name FrontendSubnet --vnet-name EcommerceVNet \  
 --resource-group EcommerceRG --network-security-group FrontendNSG
 ```
-<br/>4\. Repeat for Backend and Database subnets, restricting access to only the necessary ports.  
+4\. Repeat for Backend and Database subnets, restricting access to only the necessary ports.  
 
 ## Step 2: Deploy the Frontend
 
@@ -126,7 +126,7 @@ az webapp create --name EcommerceFrontend --resource-group EcommerceRG \
 --plan EcommerceAppPlan --runtime "NODE|16-lts"
 ```
 
-<br/>2\. Deploy the app from a Git repository:  
+2\. Deploy the app from a Git repository:  
 ```bash
 az webapp deployment source config --name EcommerceFrontend \  
 --resource-group EcommerceRG --repo-url <repository-url> --branch main --manual-integration
@@ -192,7 +192,7 @@ Deploy backend APIs to Azure Kubernetes Service (AKS), a scalable, managed platf
 AKS is a managed Kubernetes service for deploying and managing containerized applications.  
 It allows you to scale and manage your backend services seamlessly.  
 
-Steps:  
+<br/>Steps:  
 
 1\. Create the AKS Cluster:  
 ```bash
@@ -200,7 +200,7 @@ az aks create --resource-group EcommerceRG --name EcommerceAKS \
 --node-count 3 --enable-managed-identity --generate-ssh-keys
 ```
  
-<br/>2\. Connect to the cluster:  
+2\. Connect to the cluster:  
 ```bash
 az aks get-credentials --resource-group EcommerceRG --name EcommerceAKS
 ```
@@ -217,7 +217,7 @@ Containerized services are portable, scalable, and easy to manage.
 az acr build --registry EcommerceACR --image backend:v1 .
 ```
  
-<br/>2\. Deploy the backend microservices using a YAML deployment manifest:  
+2\. Deploy the backend microservices using a YAML deployment manifest:  
 ```yaml
 apiVersion: apps/v1  
 kind: Deployment  
@@ -240,7 +240,7 @@ ports:
 - containerPort: 80
 ```
 
-<br/>3\. Apply the manifest: 
+3\. Apply the manifest: 
 ```bash
 kubectl apply -f backend-deployment.yaml
 ```
@@ -258,7 +258,7 @@ helm repo add ingress-nginx <https://emea01.safelinks.protection.outlook.com/?ur
 helm install ingress-nginx ingress-nginx/ingress-nginx
 ```
 
-<br/>2\. Define an ingress rule for the backend service:  
+2\. Define an ingress rule for the backend service:  
 ```yaml
 apiVersion: networking.k8s.io/v1  
 kind: Ingress  
@@ -278,7 +278,7 @@ port:
 number: 80
 ```
  
-<br/>3\. Apply the ingress rule:
+3\. Apply the ingress rule:
 ```bash
 kubectl apply -f ingress.yaml
 ```
@@ -300,7 +300,7 @@ az sql server create --name EcommerceSQLServer --resource-group EcommerceRG \
 --location eastus --admin-user adminuser --admin-password <password>
 ```
   
-<br/>2\. Create a Database:  
+2\. Create a Database:  
 ```bash
 az sql db create --name EcommerceDB --resource-group EcommerceRG \  
 --server EcommerceSQLServer --service-objective S1
@@ -335,7 +335,7 @@ It’s optimized for storing large files and objects.
 az storage account create --name EcommerceStorage --resource-group EcommerceRG --location eastus
 ```
  
-<br/>2\. Create a Blob Container:  
+2\. Create a Blob Container:  
 ```bash
 az storage container create --name images --account-name EcommerceStorage
 ```
@@ -401,7 +401,7 @@ appName: 'EcommerceFrontend'
 package: $(System.DefaultWorkingDirectory)/\*\*/build.zip
 ```
 
-<br/>4\. Configure CI for Backend (Dockerized APIs):
+4\. Configure CI for Backend (Dockerized APIs):
 
 - For the backend, the process involves building Docker images and pushing them to Azure Container Registry (ACR).  
 
@@ -624,7 +624,7 @@ az monitor app-insights component create --app EcommerceFrontend --location east
 --resource-group EcommerceRG
 ```
 
-<br/>2\. Log Analytics:  
+2\. Log Analytics:  
 
 Use Log Analytics workspaces to aggregate logs and events from Azure resources.  
 Example to create a Log Analytics workspace:  
@@ -633,7 +633,7 @@ az monitor log-analytics workspace create --resource-group EcommerceRG \
 --workspace-name EcommerceLogs --location eastus
 ```
   
-<br/>3\. Set up Alerts:  
+3\. Set up Alerts:  
 
 Set up alerts for critical issues like low disk space, high CPU usage, or failed transactions.  
 ```bash
@@ -641,7 +641,7 @@ az monitor metrics alert create --resource-group EcommerceRG --name HighCPUAlert
 --scopes /subscriptions/{subscription-id}/resourceGroups/EcommerceRG/providers/Microsoft.Compute/virtualMachines/EcommerceVM \\  
 --condition "avg CPUUsage > 80" --action-group HighCPUActionGroup
 ```
-<br/><br/>4\. Container Monitoring (AKS):  
+4\. Container Monitoring (AKS):  
 
 Use Azure Monitor for containers to track the health and performance of your AKS cluster.  
 Enable container logs and metrics collection.  
@@ -669,7 +669,7 @@ az monitor diagnostic-settings create --name Diagnostics \\
 \- Create custom dashboards in Azure Monitor to visualize the health and performance of your platform.  
 \- Set up alert rules to notify administrators about critical issues (e.g., high latency, failed requests).  
 
-<br/><br/>Conclusion:  
+## Conclusion:  
 
-<br/>This guide has covered the end-to-end process for setting up and securing a cloud-based e-commerce platform using Microsoft Azure. We’ve addressed key stages, from environment setup to monitoring, ensuring a smooth and secure deployment process for your application.  
-<br/>By following these detailed steps, you’ll have a robust, scalable, and secure platform capable of handling e-commerce workloads, traffic spikes, and sensitive user data.
+<br/>This project has covered the end-to-end process for setting up and securing a cloud-based e-commerce platform using Microsoft Azure. We’ve addressed key stages, from environment setup to monitoring, ensuring a smooth and secure deployment process for our application.  
+<br/>By following these detailed steps, we'll have a robust, scalable, and secure platform capable of handling e-commerce workloads, traffic spikes, and sensitive user data.
