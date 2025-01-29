@@ -94,7 +94,7 @@ az network vnet subnet update --name FrontendSubnet --vnet-name EcommerceVNet \
 
 ## Step 2: Deploy the Frontend
 
-<br/>This step focuses on deploying the React/Angular frontend application using Azure App Service.  
+This step focuses on deploying the React/Angular frontend application using Azure App Service.  
 
 ### 2.1. Create App Service Plan  
 
@@ -285,7 +285,7 @@ kubectl apply -f ingress.yaml
 
 ## Step 4: Configure the Database
 
-<br/>This step involves setting up the database for storing product data, user accounts, and transaction records.  
+This step involves setting up the database for storing product data, user accounts, and transaction records.  
 
 ### 4.1. Create Azure SQL Database  
 
@@ -464,7 +464,7 @@ kubectl set image deployment/backend backend=&lt;ACR_NAME&gt;.azurecr.io/backend
 
 ## Step 8: Setting Up Application Gateway (WAF)
 
-Steps:
+<br/>Steps:
 
 1\. Create a Public IP Address for the gateway:
 ```bash
@@ -510,7 +510,7 @@ az network application-gateway address-pool create \
 --backend-addresses <FrontendApp>.azurewebsites.net"
 ```
 
-Replace <FrontendApp> with the name of your App Service (e.g. EcommerceFrontend).
+Replace <**FrontendApp**> with the name of your App Service (e.g. EcommerceFrontend, in this case).
 
 - Add Backend Pool for AKS
 - Obtain the internal IP of the AKS service exposed via a Kubernetes Service:
@@ -562,7 +562,7 @@ az network application-gateway http-settings create \
 Routing rules determine how traffic is forwarded to backend pools based on URL paths or hostnames.
 
 - Create a Listener
-- Add a listener for HTTPS traffic:
+\- Add a listener for HTTPS traffic:
 ```bash
 az network application-gateway http-listener create \
 --gateway-name AppGateway \
@@ -575,7 +575,7 @@ az network application-gateway http-listener create \
 Replace **<CERT_NAME>** with the SSL certificate name uploaded to the Application Gateway.
 
 - Define Routing Rules
-- For frontend (App Service):
+\- For frontend (App Service):
 ```bash
 az network application-gateway rule create \
 --gateway-name AppGateway \
@@ -587,7 +587,7 @@ az network application-gateway rule create \
 --address-pool FrontendAppPool
 ```
 
-- For backend (AKS):
+\- For backend (AKS):
 ```bash
 az network application-gateway rule create \
 --gateway-name AppGateway \
@@ -602,8 +602,8 @@ az network application-gateway rule create \
 
 Explanation:
 
-- **FrontendRule** forwards general traffic to the App Service.
-- **BackendRule** forwards traffic to /api/\* (e.g., /api/orders, /api/products) to the AKS backend.
+\- **FrontendRule** forwards general traffic to the App Service.
+\- **BackendRule** forwards traffic to /api/\* (e.g., /api/orders, /api/products) to the AKS backend.
 
 ## Step 9: Monitoring and Logging
 
@@ -658,16 +658,7 @@ az monitor diagnostic-settings create --name Diagnostics \\
 --metrics '\[{"category": "AllMetrics", "enabled": true}\]' \  
 --workspace /subscriptions/{subscription-id}/resourceGroups/EcommerceRG/providers/Microsoft.OperationalInsights/workspaces/EcommerceLogs
 ```
-
-<br/>Additional Best Practices:
-
-6\. Azure Application Gateway Monitoring:  
-\- Use Application Gateway Analytics to monitor traffic to your frontend and backend services.  
-\- Configure WAF logs and traffic analytics for real-time visibility.
-
-7\. Alerting and Dashboards:  
-\- Create custom dashboards in Azure Monitor to visualize the health and performance of your platform.  
-\- Set up alert rules to notify administrators about critical issues (e.g., high latency, failed requests).  
+ 
 
 ## Conclusion:  
 
